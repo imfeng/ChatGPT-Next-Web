@@ -8,7 +8,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "NextChat",
+    "productName": "PickupGPT",
     "version": "2.12.4"
   },
   "tauri": {
