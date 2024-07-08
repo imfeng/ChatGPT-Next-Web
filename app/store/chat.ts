@@ -364,7 +364,13 @@ export const useChatStore = createPersistStore(
         });
 
         var api: ClientApi;
-        if (modelConfig.model.startsWith("gemini")) {
+        console.log({
+          message: "onUserInput",
+          modelConfig,
+        });
+        if (modelConfig.model.startsWith("allen")) {
+          api = new ClientApi(ModelProvider.Allen);
+        } else if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else if (identifyDefaultClaudeModel(modelConfig.model)) {
           api = new ClientApi(ModelProvider.Claude);
@@ -548,7 +554,13 @@ export const useChatStore = createPersistStore(
         const modelConfig = session.mask.modelConfig;
 
         var api: ClientApi;
-        if (modelConfig.model.startsWith("gemini")) {
+        console.log({
+          message: "summarizeSession",
+          modelConfig,
+        });
+        if (modelConfig.model.startsWith("allen")) {
+          api = new ClientApi(ModelProvider.Allen);
+        } else if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else if (identifyDefaultClaudeModel(modelConfig.model)) {
           api = new ClientApi(ModelProvider.Claude);

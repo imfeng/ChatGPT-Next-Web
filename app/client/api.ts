@@ -9,6 +9,7 @@ import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
+import { AllenApi } from "./platforms/allen";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -95,16 +96,24 @@ export class ClientApi {
   public llm: LLMApi;
 
   constructor(provider: ModelProvider = ModelProvider.GPT) {
-    switch (provider) {
-      case ModelProvider.GeminiPro:
-        this.llm = new GeminiProApi();
-        break;
-      case ModelProvider.Claude:
-        this.llm = new ClaudeApi();
-        break;
-      default:
-        this.llm = new ChatGPTApi();
-    }
+    console.log({
+      message: "ClientApi",
+      provider,
+    });
+    this.llm = new AllenApi();
+    // switch (provider) {
+    //   case ModelProvider.Allen:
+    //     this.llm = new AllenApi();
+    //     break;
+    //   case ModelProvider.GeminiPro:
+    //     this.llm = new GeminiProApi();
+    //     break;
+    //   case ModelProvider.Claude:
+    //     this.llm = new ClaudeApi();
+    //     break;
+    //   default:
+    //     this.llm = new ChatGPTApi();
+    // }
   }
 
   config() {}
@@ -163,8 +172,18 @@ export function getHeaders() {
   const isGoogle = modelConfig.model.startsWith("gemini");
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const isAnthropic = accessStore.provider === ServiceProvider.Anthropic;
-  const authHeader = isAzure ? "api-key" : isAnthropic ? 'x-api-key' : "Authorization";
-  const apiKey = isGoogle
+  const isAllen = accessStore.provider === ServiceProvider.Allen;
+
+  const authHeader = isAllen
+    ? "api_key"
+    : isAzure
+    ? "api-key"
+    : isAnthropic
+    ? "x-api-key"
+    : "Authorization";
+  const apiKey = isAllen
+    ? "Allen_is_handsome"
+    : isGoogle
     ? accessStore.googleApiKey
     : isAzure
     ? accessStore.azureApiKey
@@ -172,7 +191,8 @@ export function getHeaders() {
     ? accessStore.anthropicApiKey
     : accessStore.openaiApiKey;
   const clientConfig = getClientConfig();
-  const makeBearer = (s: string) => `${isAzure || isAnthropic ? "" : "Bearer "}${s.trim()}`;
+  const makeBearer = (s: string) =>
+    `${isAzure || isAnthropic ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;
 
   // when using google api in app, not set auth header
@@ -185,7 +205,7 @@ export function getHeaders() {
       validString(accessStore.accessCode)
     ) {
       // access_code must send with header named `Authorization`, will using in auth middleware.
-      headers['Authorization'] = makeBearer(
+      headers["Authorization"] = makeBearer(
         ACCESS_CODE_PREFIX + accessStore.accessCode,
       );
     }

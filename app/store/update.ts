@@ -143,7 +143,7 @@ export const useUpdateStore = createPersistStore(
       }));
 
       try {
-        const api = new ClientApi(ModelProvider.GPT);
+        const api = new ClientApi(ModelProvider.Allen);
         const usage = await api.llm.usage();
 
         if (usage) {

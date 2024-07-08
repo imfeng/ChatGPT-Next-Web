@@ -70,12 +70,14 @@ export enum ServiceProvider {
   Azure = "Azure",
   Google = "Google",
   Anthropic = "Anthropic",
+  Allen = "Allen",
 }
 
 export enum ModelProvider {
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
+  Allen = "Allen",
 }
 
 export const Anthropic = {
@@ -175,20 +177,29 @@ export const DEFAULT_MODELS = [
     name: "AllenGPT",
     available: true,
     provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
+      id: "allen",
+      providerName: ServiceProvider.Allen,
+      providerType: "allen",
     },
   },
-  ...openaiModels.map((name) => ({
-    name,
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  })),
+  // {
+  //   name: "gpt-4o",
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // },
+  // ...openaiModels.map((name) => ({
+  //   name,
+  //   available: true,
+  //   provider: {
+  //     id: "openai",
+  //     providerName: "OpenAI",
+  //     providerType: "openai",
+  //   },
+  // })),
   // ...googleModels.map((name) => ({
   //   name,
   //   available: true,
