@@ -149,6 +149,7 @@ export class ClientApi {
         items: msgs,
       }),
       headers: {
+        api_key: "Allen_is_handsome",
         "Content-Type": "application/json",
       },
       method: "POST",
