@@ -143,7 +143,7 @@ export class AllenApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = "https://chat-tutor-deploy.onrender.com/upload_text/";
+      const chatPath = "https://nest-test-k66z.onrender.com/upload_text/";
       const chatPayload = {
         method: "POST",
         body: JSON.stringify({
