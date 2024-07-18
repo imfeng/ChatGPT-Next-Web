@@ -48,9 +48,16 @@ const CorsHeaders = [
   },
   {
     key: "Access-Control-Max-Age",
-    value: "86400",
+    value: "60",
   },
 ];
+nextConfig.headers = async () => {
+  return [
+    {
+      headers: CorsHeaders,
+    },
+  ];
+};
 
 if (mode !== "export") {
   nextConfig.headers = async () => {
@@ -65,6 +72,10 @@ if (mode !== "export") {
   nextConfig.rewrites = async () => {
     const ret = [
       // adjust for previous version directly using "/api/proxy/" as proxy base route
+      {
+        source: "/api/proxy/allen/:path*",
+        destination: "https://nest-test-k66z.onrender.com/:path*",
+      },
       {
         source: "/api/proxy/v1/:path*",
         destination: "https://api.openai.com/v1/:path*",
@@ -88,6 +99,10 @@ if (mode !== "export") {
       {
         source: "/sharegpt",
         destination: "https://sharegpt.com/api/conversations",
+      },
+      {
+        source: "/api/proxy/v1/:path*",
+        destination: "https://api.openai.com/v1/:path*",
       },
     ];
 
