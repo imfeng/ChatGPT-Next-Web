@@ -182,15 +182,24 @@ export const DEFAULT_MODELS = [
       providerType: "allen",
     },
   },
-  // {
-  //   name: "gpt-4o",
-  //   available: true,
-  //   provider: {
-  //     id: "openai",
-  //     providerName: "OpenAI",
-  //     providerType: "openai",
-  //   },
-  // },
+  {
+    name: "gpt-4o",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-4",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
   // ...openaiModels.map((name) => ({
   //   name,
   //   available: true,
