@@ -73,6 +73,10 @@ if (mode !== "export") {
     const ret = [
       // adjust for previous version directly using "/api/proxy/" as proxy base route
       {
+        source: "/api/allen/:path*",
+        destination: "https://nest-test-k66z.onrender.com/:path*",
+      },
+      {
         source: "/api/proxy/allen/:path*",
         destination: "https://nest-test-k66z.onrender.com/:path*",
       },
