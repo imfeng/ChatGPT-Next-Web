@@ -80,9 +80,7 @@ export class AllenApi implements LLMApi {
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/proxy" + ApiPath.OpenAI
-        : ApiPath.OpenAI;
+      baseUrl = isApp ? DEFAULT_API_HOST + "/api/proxy/allen" : ApiPath.Allen;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -143,7 +141,17 @@ export class AllenApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = "https://chat-tutor-deploy.onrender.com/upload_text/";
+      // const chatPath = "https://chat-tutor-deploy.onrender.com/upload_text/";
+      // const chatPath = "https://nest-test-k66z.onrender.com/upload_text/";
+      const chatPath = "/api/proxy/allen/upload_text/";
+      const isApp = !!getClientConfig()?.isApp;
+
+      // const baseUrl = isApp
+      //     ? DEFAULT_API_HOST +
+      //       "/api/proxy/google/" +
+      //       Google.ChatPath(modelConfig.model)
+      //     : this.path(Google.ChatPath(modelConfig.model));
+
       const chatPayload = {
         method: "POST",
         body: JSON.stringify({

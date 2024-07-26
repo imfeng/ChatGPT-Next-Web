@@ -143,6 +143,10 @@ export const useUpdateStore = createPersistStore(
       }));
 
       try {
+        console.log({
+          message: "Update Usage",
+          provider: ModelProvider.Allen,
+        });
         const api = new ClientApi(ModelProvider.Allen);
         const usage = await api.llm.usage();
 
