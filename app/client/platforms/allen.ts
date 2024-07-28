@@ -323,7 +323,7 @@ function contentToAllenPayload(content: any) {
 }
 
 // Function to convert base64 to Blob
-function base64ToBlob(base64, contentType = "", sliceSize = 512) {
+function base64ToBlob(base64: string, contentType = "", sliceSize = 512) {
   const byteCharacters = atob(base64);
   const byteArrays = [];
 
