@@ -44,7 +44,7 @@ const DEFAULT_ACCESS_STATE = {
 
   // server config
   needCode: true,
-  hideUserApiKey: false,
+  hideUserApiKey: true,
   hideBalanceQuery: false,
   disableGPT4: false,
   disableFastLink: false,
@@ -105,8 +105,12 @@ export const useAccessStore = createPersistStore(
         .then((res) => {
           // Set default model from env request
           let defaultModel = res.defaultModel ?? "";
+          console.log({
+            message: "/api/config",
+            res,
+          });
           DEFAULT_CONFIG.modelConfig.model =
-            defaultModel !== "" ? defaultModel : "gpt-3.5-turbo";
+            defaultModel !== "" ? defaultModel : "AllenGPT";
           return res;
         })
         .then((res: DangerConfig) => {

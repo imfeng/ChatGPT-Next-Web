@@ -9,6 +9,7 @@ import Locale from "../locales";
 import BotIcon from "../icons/bot.svg";
 import { useEffect } from "react";
 import { getClientConfig } from "../config/client";
+import { useAuthContext } from "../context/AuthContext";
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -30,16 +31,45 @@ export function AuthPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { login, user } = useAuthContext();
+  const loginWithGoogle = async () => {
+    try {
+      console.log({
+        login,
+        user,
+      });
+      await login();
+      accessStore.update((access) => {
+        access.openaiApiKey = "";
+        access.accessCode = "TEST";
+      });
+      goChat();
+      // router.push('/');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className={styles["auth-page"]}>
       <div className={`no-dark ${styles["auth-logo"]}`}>
         <BotIcon />
       </div>
 
-      <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
-      <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
+      {/* <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
+      <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div> */}
+      <div className={styles["auth-title"]}>Login</div>
+      {/* <div className={styles["auth-tips"]}>Submit your API Key</div> */}
 
-      <input
+      <button
+        className={styles["google-sign-in-button"]}
+        type="button"
+        onClick={loginWithGoogle}
+      >
+        Login with Google
+      </button>
+
+      {/* <input
         className={styles["auth-input"]}
         type="password"
         placeholder={Locale.Auth.Input}
@@ -49,7 +79,8 @@ export function AuthPage() {
             (access) => (access.accessCode = e.currentTarget.value),
           );
         }}
-      />
+      /> */}
+
       {!accessStore.hideUserApiKey ? (
         <>
           <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
@@ -78,7 +109,7 @@ export function AuthPage() {
         </>
       ) : null}
 
-      <div className={styles["auth-actions"]}>
+      {/* <div className={styles["auth-actions"]}>
         <IconButton
           text={Locale.Auth.Confirm}
           type="primary"
@@ -91,7 +122,7 @@ export function AuthPage() {
             goHome();
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

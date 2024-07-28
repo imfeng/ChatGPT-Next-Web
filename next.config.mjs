@@ -33,6 +33,14 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true,
   },
+  rewrites: [{
+    source: "/api/allen/:path*",
+    destination: "https://chat-tutor-deploy.onrender.com/:path*",
+  },
+  {
+    source: "/api/proxy/allen/:path*",
+    destination: "https://chat-tutor-deploy.onrender.com/:path*",
+  },],
 };
 
 const CorsHeaders = [
@@ -69,51 +77,51 @@ if (mode !== "export") {
     ];
   };
 
-  nextConfig.rewrites = async () => {
-    const ret = [
-      // adjust for previous version directly using "/api/proxy/" as proxy base route
-      {
-        source: "/api/allen/:path*",
-        destination: "https://nest-test-k66z.onrender.com/:path*",
-      },
-      {
-        source: "/api/proxy/allen/:path*",
-        destination: "https://nest-test-k66z.onrender.com/:path*",
-      },
-      {
-        source: "/api/proxy/v1/:path*",
-        destination: "https://api.openai.com/v1/:path*",
-      },
-      {
-        source: "/api/proxy/google/:path*",
-        destination: "https://generativelanguage.googleapis.com/:path*",
-      },
-      {
-        source: "/api/proxy/openai/:path*",
-        destination: "https://api.openai.com/:path*",
-      },
-      {
-        source: "/api/proxy/anthropic/:path*",
-        destination: "https://api.anthropic.com/:path*",
-      },
-      {
-        source: "/google-fonts/:path*",
-        destination: "https://fonts.googleapis.com/:path*",
-      },
-      {
-        source: "/sharegpt",
-        destination: "https://sharegpt.com/api/conversations",
-      },
-      {
-        source: "/api/proxy/v1/:path*",
-        destination: "https://api.openai.com/v1/:path*",
-      },
-    ];
+  // nextConfig.rewrites = async () => {
+  //   const ret = [
+  //     // adjust for previous version directly using "/api/proxy/" as proxy base route
+  //     {
+  //       source: "/api/allen/:path*",
+  //       destination: "https://chat-tutor-deploy.onrender.com/:path*",
+  //     },
+  //     {
+  //       source: "/api/proxy/allen/:path*",
+  //       destination: "https://chat-tutor-deploy.onrender.com/:path*",
+  //     },
+  //     {
+  //       source: "/api/proxy/v1/:path*",
+  //       destination: "https://api.openai.com/v1/:path*",
+  //     },
+  //     {
+  //       source: "/api/proxy/google/:path*",
+  //       destination: "https://generativelanguage.googleapis.com/:path*",
+  //     },
+  //     {
+  //       source: "/api/proxy/openai/:path*",
+  //       destination: "https://api.openai.com/:path*",
+  //     },
+  //     {
+  //       source: "/api/proxy/anthropic/:path*",
+  //       destination: "https://api.anthropic.com/:path*",
+  //     },
+  //     {
+  //       source: "/google-fonts/:path*",
+  //       destination: "https://fonts.googleapis.com/:path*",
+  //     },
+  //     {
+  //       source: "/sharegpt",
+  //       destination: "https://sharegpt.com/api/conversations",
+  //     },
+  //     {
+  //       source: "/api/proxy/v1/:path*",
+  //       destination: "https://api.openai.com/v1/:path*",
+  //     },
+  //   ];
 
-    return {
-      beforeFiles: ret,
-    };
-  };
+  //   return {
+  //     beforeFiles: ret,
+  //   };
+  // };
 }
 
 export default nextConfig;

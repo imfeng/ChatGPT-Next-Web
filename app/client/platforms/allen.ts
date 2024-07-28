@@ -109,15 +109,41 @@ export class AllenApi implements LLMApi {
       role: v.role,
       content: visionModel ? v.content : getMessageTextContent(v),
     }));
-
-    const hasImage = messages.some((item) => {
-      if (typeof item.content === "string") {
-        return false;
-      }
-      return item.content.some((v) => v?.type === "image_url");
-    });
+    const latestMessage = messages[messages.length - 1];
+    let hasImage = false;
+    if (typeof latestMessage.content === "string") {
+      hasImage = false;
+    } else {
+      hasImage = latestMessage.content.some((v) => v?.type === "image_url");
+    }
+    // const hasImage = messages.some((item) => {
+    //   if (typeof item.content === "string") {
+    //     return false;
+    //   }
+    //   return item.content.some((v) => v?.type === "image_url");
+    // });
+    let formData;
     if (hasImage) {
-      options.onError?.(new Error("Image is not supported in AllenAI"));
+      console.log({
+        latestMessage,
+      });
+      if (typeof latestMessage.content === "string") {
+        options.onError?.(new Error("Image error"));
+        return;
+      }
+      const imageInfo = latestMessage.content.find(
+        (v) => v?.type === "image_url",
+      );
+      if (!imageInfo) {
+        options.onError?.(new Error("Image url not found"));
+        return;
+      }
+      const base64 = imageInfo.image_url?.url;
+      if (!base64) {
+        options.onError?.(new Error("Image url not found"));
+        return;
+      }
+      formData = parseBase64ToFormData(base64);
     }
 
     const requestPayloadForText = messages.map((item) => {
@@ -141,9 +167,12 @@ export class AllenApi implements LLMApi {
     options.onController?.(controller);
 
     try {
+      const isImage = hasImage && formData;
       // const chatPath = "https://chat-tutor-deploy.onrender.com/upload_text/";
       // const chatPath = "https://nest-test-k66z.onrender.com/upload_text/";
-      const chatPath = "/api/proxy/allen/upload_text/";
+      const chatPath = isImage
+        ? "/api/proxy/allen/upload_image/"
+        : "/api/proxy/allen/upload_text/";
       const isApp = !!getClientConfig()?.isApp;
 
       // const baseUrl = isApp
@@ -154,9 +183,11 @@ export class AllenApi implements LLMApi {
 
       const chatPayload = {
         method: "POST",
-        body: JSON.stringify({
-          conversation: requestPayloadForText,
-        }),
+        body: isImage
+          ? formData
+          : JSON.stringify({
+              conversation: requestPayloadForText,
+            }),
         signal: controller.signal,
         headers: getHeaders(),
       };
@@ -289,4 +320,41 @@ function contentToAllenPayload(content: any) {
   if (typeof content === "string") {
     return content;
   }
+}
+
+// Function to convert base64 to Blob
+function base64ToBlob(base64, contentType = "", sliceSize = 512) {
+  const byteCharacters = atob(base64);
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  const blob = new Blob(byteArrays, { type: contentType });
+  return blob;
+}
+
+function parseBase64ToFormData(base64Image: string) {
+  // Extract the base64 string and content type
+  const base64ImageParts = base64Image.split(",");
+  const contentType = base64ImageParts[0].split(":")[1].split(";")[0];
+  const base64String = base64ImageParts[1];
+
+  // Convert base64 to Blob
+  const imageBlob = base64ToBlob(base64String, contentType);
+
+  // Create a FormData object and append the Blob
+  const formData = new FormData();
+  formData.append("file", imageBlob, "image.jpg");
+
+  return formData;
 }

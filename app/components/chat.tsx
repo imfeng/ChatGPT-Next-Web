@@ -98,6 +98,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { MultimodalContent } from "../client/api";
+import { useAuthContext } from "../context/AuthContext";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -565,11 +566,12 @@ export function ChatActions(props: {
         }}
       />
 
-      <ChatAction
+      {/* TODO: Model selector */}
+      {/* <ChatAction
         onClick={() => setShowModelSelector(true)}
         text={currentModel}
         icon={<RobotIcon />}
-      />
+      /> */}
 
       {showModelSelector && (
         <Selector
@@ -945,6 +947,8 @@ function _Chat() {
   }, [session.mask.context, session.mask.hideContext]);
   const accessStore = useAccessStore();
 
+  const { login, user } = useAuthContext();
+
   if (
     context.length === 0 &&
     session.messages.at(0)?.content !== BOT_HELLO.content
@@ -952,6 +956,18 @@ function _Chat() {
     const copiedHello = Object.assign({}, BOT_HELLO);
     if (!accessStore.isAuthorized()) {
       copiedHello.content = Locale.Error.Unauthorized;
+    }
+    if (user) {
+      console.log({
+        user,
+        BOT_HELLO,
+      });
+      if (typeof BOT_HELLO.content === "string") {
+        copiedHello.content = BOT_HELLO.content.replaceAll(
+          /User/g,
+          user.displayName,
+        );
+      }
     }
     context.push(copiedHello);
   }
